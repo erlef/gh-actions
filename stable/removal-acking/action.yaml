@@ -1,0 +1,51 @@
+name: Removal Acknowledgement
+description: >-
+  Used to verify the user's acknowledgement of the removal of the action in the
+  future. This action is used to ensure that the user is aware of the removal of
+  the action and the reason for the removal.
+author: Erlang Ecosystem Foundation
+branding:
+  color: red
+  icon: alert-triangle
+
+inputs:
+  action-name:
+    description: The name of the action.
+    required: true
+  requires-ack:
+    description: The action requires acknowledgement.
+    required: false
+    default: "false"
+  user-ack:
+    description: The user acknowledges of the removal of the action in the future.
+    required: true
+    default: "false"
+  removal-date:
+    description: The date the action will be removed.
+    required: false
+    default: "No date provided."
+  removal-reason:
+    description: The reason for the removal of the action.
+    required: false
+    default: "No reason provided."
+
+runs:
+  using: composite
+  steps:
+    - name: Verify the User Acknowledgement
+      if: "${{ inputs.requires-ack == 'true' }}"
+      shell: bash
+      run: |
+        if [ "${{ inputs.user-ack }}" != "true" ]; then
+          echo "# Removal Acknowledgement Required" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Removal Date:** ${{ inputs.removal-date }}." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "${{ inputs.action-name }} action will be removed on the specified date. You must acknowledge the removal of the action." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Reason" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "${{ inputs.removal-reason }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          exit 1
+        fi

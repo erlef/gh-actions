@@ -14,12 +14,16 @@ libraries.
 
 ## References
 
+- [Contributing](./CONTRIBUTING.md) Guide.
+
 ## Explanations
 
 ### Launch Stage
 
 - **Preview:** Actions are for testing. No guarantees are provided of any kind.
-  You can find them in the `./preview` directory.
+  You can find them in the `./preview` directory. Expect breaking changes and
+  bugs. The intention is to gather feedback and iterate on the design.
 
 - **Stable:** Actions are for production usage. They are supported and
-  maintained. You can find them in the `./stable` directory.
+  maintained. You can find them in the `./stable` directory. Expect proper
+  SemVer versioning and changelogs.
