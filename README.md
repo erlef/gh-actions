@@ -18,6 +18,14 @@ libraries.
 
 ## Explanations
 
+### Composition over Configuration
+
+We aim to provide actions that are composable. This means that you can combine
+multiple actions to create a workflow that fits your needs and avoid having to
+configure a single action to handle all possible use cases.
+We are not opposed to providing actions that are more opinionated, or even
+entire Workflows, but we will focus on getting the composition right first.
+
 ### Primary Audience
 
 As of today, we are focusing on **Library Authors** as our primary audience.
