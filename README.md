@@ -18,6 +18,15 @@ libraries.
 
 ## Explanations
 
+### Primary Audience
+
+As of today, we are focusing on **Library Authors** as our primary audience.
+We aim to provide actions that help library authors automate common tasks such as testing, building, releasing, and maintaining libraries.
+
+As we grow, we **MAY** expand our focus to include other audiences such as
+**Application Developers**, but that is not our primary focus at the moment
+due to the complexity of the use cases involved.
+
 ### 80/20 Rule
 
 We aim to provide actions that cover 80% of the use cases with 20% of the
