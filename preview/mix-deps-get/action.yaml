@@ -1,0 +1,84 @@
+name: Install Dependencies with Caching
+description: Install dependencies with caching for Mix projects.
+author: Erlang Ecosystem Foundation
+branding:
+  color: purple
+  icon: package
+inputs:
+  elixir-version:
+    description: The Elixir installed.
+    required: true
+  erlang-version:
+    description: The Erlang/OTP installed
+    required: true
+  cache-etag:
+    description: The etag to use for the cache.
+    required: false
+    default: "v1"
+  deps-dir:
+    description: The path to the deps directory.
+    required: false
+    default: "deps"
+  mix-lock:
+    description: A glob pattern to find mix.lock file.
+    required: false
+    default: "**/mix.lock"
+  working-directory:
+    description: The working directory to run the mix commands.
+    required: false
+    default: "."
+
+outputs:
+  cache-hit:
+    description: Whether the cache was hit or not.
+    value: ${{ steps.cache-deps-restore.outputs.cache-hit }}
+
+runs:
+  using: composite
+  steps:
+    - name: Verify Removal Acknowledgement
+      uses: erlef/gh-actions/stable/removal-acking@v0.1.0
+      with:
+        action-name: erlef/gh-actions/preview/mix-deps-get
+
+    - name: Validate inputs
+      shell: bash
+      run: |
+        if [ -z "${{ inputs.elixir-version }}" ]; then
+          echo "elixir-version is required given: '${{ inputs.elixir-version }}'"
+          exit 1
+        fi
+        if [ -z "${{ inputs.erlang-version }}" ]; then
+          echo "erlang-version is required given: '${{ inputs.erlang-version }}'"
+          exit 1
+        fi
+
+    - name: Cache deps restore
+      id: cache-deps-restore
+      uses: actions/cache/restore@v4.0.2
+      with:
+        path: ${{ inputs.deps-dir }}
+        key: mix-deps-get/${{ inputs.cache-etag }}/${{ inputs.erlang-version }}/${{ inputs.elixir-version }}/${{ hashFiles(inputs.mix-lock) }}
+        restore-keys: |
+          mix-deps-get/${{ inputs.cache-etag }}/${{ inputs.erlang-version }}/${{ inputs.elixir-version }}/${{ hashFiles(inputs.mix-lock) }}
+
+    - if: github.run_attempt != '1'
+      name: Clean dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        mix deps.clean --all
+        mix clean
+
+    - name: Install dependencies
+      if: github.run_attempt != '1' || steps.cache-deps-restore.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: mix deps.get
+
+    - name: Save deps cache
+      uses: actions/cache/save@v4.0.2
+      if: github.run_attempt != '1' || steps.cache-deps-restore.outputs.cache-hit != 'true'
+      with:
+        path: ${{ inputs.deps-dir }}
+        key: ${{ steps.cache-deps-restore.outputs.cache-primary-key }}
