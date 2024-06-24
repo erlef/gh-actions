@@ -18,6 +18,15 @@ libraries.
 
 ## Explanations
 
+### 80/20 Rule
+
+We aim to provide actions that cover 80% of the use cases with 20% of the
+effort. This means that we will focus on providing actions that are useful for
+the majority of the BEAM community. We acknowledge that we will not be able to
+provide actions for every possible use case. But we will try to provide actions
+that are flexible enough to be customized to fit the remaining 20% of the use
+cases.
+
 ### Launch Stage
 
 - **Preview:** Actions are for testing. No guarantees are provided of any kind.
